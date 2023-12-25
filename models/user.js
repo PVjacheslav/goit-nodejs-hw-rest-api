@@ -21,7 +21,10 @@ const userSchema = new Schema(
       enum: ["starter", "pro", "business"],
       default: "starter",
     },
-    token: String,
+    token: {
+      type: String,
+      default: "",
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -33,7 +36,7 @@ const registerSchema = Joi.object({
     "any.required": `Missing required email field`,
   }),
   password: Joi.string().min(6).required().messages({
-    "any.required": `Missing required phone field`,
+    "any.required": `Missing required password field`,
   }),
 });
 
@@ -42,7 +45,7 @@ const loginSchema = Joi.object({
     "any.required": `Missing required email field`,
   }),
   password: Joi.string().min(6).required().messages({
-    "any.required": `Missing required phone field`,
+    "any.required": `Missing required password field`,
   }),
 });
 
