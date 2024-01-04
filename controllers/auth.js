@@ -83,6 +83,9 @@ const logout = async (req, res) => {
 const updateAvatar = async(req, res) => {
   const {_id} = req.user;
   const {path: tempUpload, originalname} = req.file;
+  if(!req.file) { 
+    res.status(400).json({message: 'No file uploaded'}) 
+  }
   const img = await Jimp.read(tempUpload);
   await img
     .autocrop()
