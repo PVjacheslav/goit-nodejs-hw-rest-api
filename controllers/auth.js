@@ -88,16 +88,20 @@ const updateAvatar = async(req, res) => {
     .autocrop()
     .cover(250, 250, Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE)
     .writeAsync(tempUpload);
-
   const filename =`${_id}_${originalname}`;
-  const resultUpload = path.join(avatarsDir, filename);
-  await fs.rename(tempUpload, resultUpload);
-  const avatarURL = path.join("avatars", filename);
-  await User.findByIdAndUpdate(_id, {avatarURL});
-
-  res.status(200).json({
-    avatarURL,
-  })
+  try{
+    const resultUpload = path.join(avatarsDir, filename);
+    await fs.rename(tempUpload, resultUpload);
+    const avatarURL = path.join("avatars", filename);
+    await User.findByIdAndUpdate(_id, {avatarURL});
+  
+    res.status(200).json({
+      avatarURL,
+    })
+  } catch (error){
+    await fs.unlink(tempUpload);
+    throw HttpError(400, "Bad Request")
+  }
 }
 
 module.exports = {
