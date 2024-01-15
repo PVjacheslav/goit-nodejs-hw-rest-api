@@ -62,9 +62,6 @@ const emailSchema = Joi.object({
   email: Joi.string().pattern(emailRegex).required().messages({
     'any.required': `Missing required email field`,
   }),
-  password: Joi.string().min(6).required().messages({
-    "any.required": `Missing required password field`,
-  }),
 })
 
 const loginSchema = Joi.object({
