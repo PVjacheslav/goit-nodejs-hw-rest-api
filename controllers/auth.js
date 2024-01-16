@@ -5,7 +5,7 @@ const path = require("path");
 const fs = require("fs/promises");
 const Jimp = require("jimp");
 const { User } = require("../models/user");
-const { ctrlWrapper, HttpError } = require("../helpers");
+const { ctrlWrapper, HttpError, sendEmail } = require("../helpers");
 const {nanoid} =require("nanoid");
 
 const { SECRET_KEY, BASE_URL } = process.env;
@@ -22,14 +22,14 @@ const register = async (req, res) => {
 
   const hashPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email);
-  const verificationCode = nanoid();
+  const verificationToken = nanoid();
 
-  const newUser = await User.create({ ...req.body, password: hashPassword, avatarURL, verificationCode });
+  const newUser = await User.create({ ...req.body, password: hashPassword, avatarURL, verificationToken });
 
   const verifyEmail = {
     to: email,
     subject: 'Verify your email',
-    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationCode}">Click verify email</a>`,
+    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationToken}">Click verify email</a>`,
   };
 
   await sendEmail(verifyEmail);
